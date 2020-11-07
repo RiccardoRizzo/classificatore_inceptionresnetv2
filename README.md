@@ -1,1 +1,0 @@
-# classificatore_inceptionresnetv2
