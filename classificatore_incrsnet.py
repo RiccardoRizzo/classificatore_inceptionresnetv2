@@ -20,6 +20,7 @@ print(mm)
 
 
 
+
 # Load the checkpoint file.
 #state_dict = torch.load(nome_completo, map_location='cpu')
 
