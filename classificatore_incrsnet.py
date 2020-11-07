@@ -17,6 +17,9 @@ nome_completo = "best.pth"
 mm = torch.load(nome_completo, map_location='cpu')
 
 print(mm)
+
+
+
 # Load the checkpoint file.
 #state_dict = torch.load(nome_completo, map_location='cpu')
 
