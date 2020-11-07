@@ -1,3 +1,7 @@
+"""
+Classificatore realizzato per caricare gli addestramenti di Filippo
+e fornire in output le features esiderate
+"""
 import torch
 import sys
 from torch import nn
