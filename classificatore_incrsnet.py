@@ -18,7 +18,10 @@ mm = torch.load(nome_completo, map_location='cpu')
 
 print(mm)
 
-
+##############################################################
+###
+###  CODICE INUTILE
+##############################################################
 
 
 # Load the checkpoint file.
