@@ -1,6 +1,7 @@
 """
 Classificatore realizzato per caricare gli addestramenti di Filippo
-e fornire in output le features esiderate
+e fornire in output le features esiderate.
+Da usare anche con la FID
 """
 import torch
 import sys
