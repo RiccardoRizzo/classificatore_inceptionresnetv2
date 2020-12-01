@@ -25,10 +25,11 @@ import torchvision.transforms as transforms
 
 # CREA LA CALSSE RELATIVA ALLA STRUTTURA DATI
 class Image_Dataset(Dataset):
-    def __init__(self, img_data, img_path, img_size, transform=None):
+    def __init__(self, img_data, img_path,  img_size, transform=None):
         """
         img_data : dataset pandas contenente i nomi delle immagini
         img_path : base path per le immagini
+        img_subdirs : lista delle sottodirectory delle immagini
         img_size : nuova dimensione delle immagini
         transform : eventuale altra trasformazione da fare sulle immagini
         """
@@ -41,6 +42,7 @@ class Image_Dataset(Dataset):
         return len(self.img_data)
     
     def __getitem__(self, index):
+
 
         img_name = os.path.join(self.img_path,self.img_data.loc[index, 'labels'],
                                 self.img_data.loc[index, 'Images'])
@@ -82,7 +84,7 @@ def crea_dataset_immagini(BASE_PATH, subdirs, etichette, transform = None):
     data['encoded_labels'] = lb.fit_transform(data['labels'])
     #print(data.head)
 
-    dataset = Image_Dataset(data, BASE_PATH, (100, 100) )
+    dataset = Image_Dataset(data, BASE_PATH,  (100, 100), transform )
 
     return dataset
 
@@ -93,7 +95,7 @@ def crea_dataset_immagini(BASE_PATH, subdirs, etichette, transform = None):
 if __name__ == "__main__":
     # CARICO IL DATASET DI IMMAGINI DA CLASSIFICARE
     BASE_PATH = "/home/riccardo/Desktop/Link to classificatore_inception_resnet/sorgenti/dataset/"
-    subdirs = ["adenosis_dir", "blabla_dir"]
+    subdirs = ["adenosis", "blabla"]
     etichette = ["adenosis", "blabla"]
 
     crea_dataset_immagini(BASE_PATH, subdirs, etichette)
