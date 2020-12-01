@@ -7,16 +7,32 @@ import torch
 import sys
 from torch import nn
 
+from torch.utils.data import Dataset
+
+### SETTA IL DEVICE
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
 # importo il path del modulo (da risistemare)
 sys.path.append("/home/riccardo/git-sw/ann_modelli_importati/inceptionresnetv2_nuova/")
 import pretrainedmodels as ptm
 
+
+
 # cosi' posso caricare la rete in un colpo
 nome_completo = "best.pth"
 
-mm = torch.load(nome_completo, map_location='cpu')
+mm = torch.load(nome_completo, map_location=device)
+
 
 print(mm)
+
+
+## SVILUPPO CLASSIFICATORE
+## =======================
+
+
+
+
 
 ##############################################################
 ###
