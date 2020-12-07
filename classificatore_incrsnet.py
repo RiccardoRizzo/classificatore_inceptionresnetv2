@@ -79,7 +79,7 @@ ds = dspt.crea_dataset_immagini(BASE_PATH,
 
 ## DEFINISCO  IL BATCH SIZE
 ## =======================================
-batch_size = len(ds)
+batch_size = 1000
 shuffle_dataset = True
 random_seed= 42
 
@@ -98,39 +98,38 @@ validation_loader = torch.utils.data.DataLoader(ds,
                                             batch_size=batch_size,
                                             sampler=valid_sampler)
 
-
-
-###################################################################
-###################################################################
 ## INIZIO CLASSIFICAZIONE
-###################################################################
-##       DA DEBUGGARE
-###################################################################
+#dataiter = iter(validation_loader)
+
+#images, labels = dataiter.next()
+
 
 matrice_confusione = np.zeros( (len(subdirs), len(subdirs)) ) 
+num_elementi_totali = len(ds)
+num_elementi_testati = 0
 
-dataiter = iter(validation_loader)
-
-images, labels = dataiter.next()
-
-# Viewing data examples used for training
-
+# comincia il test
 with torch.no_grad():
     model.eval()
+    # batch di valutazione
+    for images, labels in validation_loader:
 
-    for image, label in zip(images, labels):
-        image_tensor = image.unsqueeze_(0)
-        output_ = model(image_tensor)
-        output_ = output_.argmax()
-        # la classe reale sta sulle righe
-        r = label.item()
-        # la predizione sulle colonne
-        c = output_.item()  
-        matrice_confusione[r][c] += 1
+        num_elementi_testati += len(images)
+        for image, label in zip(images, labels):
+            image_tensor = image.unsqueeze_(0)
+            output_ = model(image_tensor)
+            output_ = output_.argmax()
+            # la classe reale sta sulle righe
+            r = label.item()
+            # la predizione sulle colonne
+            c = output_.item()  
+            matrice_confusione[r][c] += 1
 
-        # k = output_.item()==label.item()
-        # print(output_.item() , label.item() )
-
+        # stampa report parziale
+        print("num. elementi testati : " + str(num_elementi_testati) + " su " +str(num_elementi_totali))
+        print(matrice_confusione)
+# stampa finale
+print("matrice di confusione finale")
 print(matrice_confusione)
 #######################################################################
 #######################################################################
