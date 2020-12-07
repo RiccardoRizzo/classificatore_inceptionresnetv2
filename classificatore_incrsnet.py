@@ -5,6 +5,7 @@ Da usare anche con la FID
 """
 import torch
 import sys
+import os
 from torch import nn
 
 import matplotlib.pyplot as plt
@@ -24,88 +25,6 @@ import pretrainedmodels as ptm
 
 import dataset_pytorch as dspt
 
-# cosi' posso caricare la rete in un colpo
-nome_completo = "best.pth"
-
-mm = torch.load(nome_completo, map_location=device)
-
-
-print(mm)
-
-## CODICE DA 
-## https://www.kaggle.com/basu369victor/pytorch-tutorial-the-classification
-## ========================================================================
-
-## CREO IL DATASET
-## ===============
-BASE_PATH = "/home/riccardo/Focus/22==Esperimenti/Anno2020/classificatore_inception_resnet/sorgenti/dataset/"
-subdirs = ["adenosis", "blabla"]
-etichette = ["adenosis", "blabla"]
-
-## DEFINISCE LA TRASFORMAZIONE
-##============================
-transform = transforms.Compose(
-    [transforms.ToTensor(),
-     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
-     )
-
-ds = dspt.crea_dataset_immagini(BASE_PATH, 
-                                subdirs, 
-                                etichette, 
-                                transform=transform)
-
-## DEFINISCO I RAPPORTI FRA TRAINING E TEST 
-## E IL BATCH SIZE
-## =======================================
-batch_size = 6
-validation_split = .3
-shuffle_dataset = True
-random_seed= 42
-
-# Creating data indices for training and validation splits:
-## EQUIVALENTE A 
-# from sklearn.model_selection import train_test_split
-# tr, val = train_test_split(data.label, stratify=data.label, test_size=0.1)
-dataset_size = len(ds)
-indices = list(range(dataset_size))
-split = int(np.floor(validation_split * dataset_size))
-if shuffle_dataset :
-    np.random.seed(random_seed)
-    np.random.shuffle(indices)
-train_indices, val_indices = indices[split:], indices[:split]
-
-## DEFINISCE I SAMPLERS
-## ======================
-train_sampler = SubsetRandomSampler(train_indices)
-valid_sampler = SubsetRandomSampler(val_indices)
-
-## DEFINISCE I LOADERS
-## ===================
-train_loader = torch.utils.data.DataLoader(ds, 
-                                            batch_size=batch_size, 
-                                            sampler=train_sampler)
-
-validation_loader = torch.utils.data.DataLoader(ds, 
-                                            batch_size=batch_size,
-                                            sampler=valid_sampler)
-
-
-
-
-
-
-###################################################################
-###################################################################
-## INIZIO CLASSIFICAZIONE
-###################################################################
-###################################################################
-
-
-
-
-
-
-
 ## VISUALIZZAZIONE
 ##================
 def img_display(img):
@@ -116,20 +35,106 @@ def img_display(img):
 
 
 
-# get some random training images
-dataiter = iter(train_loader)
-images, labels = dataiter.next()
-print(images.size(), labels.size())
-image_types = {0: 'adenosis', 1: 'blabla'}
-# Viewing data examples used for training
-fig, axis = plt.subplots(2, 2, figsize=(15, 10))
-for i, ax in enumerate(axis.flat):
-    with torch.no_grad():
-        image, label = images[i], labels[i]
-        ax.imshow(img_display(image)) # add image
-        ax.set(title = f"{image_types[label.item()]}") # add label
 
-plt.show()
+
+# cosi' posso caricare la rete in un colpo
+nome_completo = "/home/riccardo/Desktop/Link to classificatore_inception_resnet/best.pth"
+
+model = torch.load(nome_completo, map_location=device)
+
+
+print(model)
+
+## CODICE DA 
+## https://www.kaggle.com/basu369victor/pytorch-tutorial-the-classification
+## ========================================================================
+
+## CREO IL DATASET
+## ===============
+BASE_PATH = "/home/riccardo/Focus/22==Esperimenti/Anno2020/Articolo Workshop ICPR/GAN/dataset/train_tutte_dim_eguali/"
+
+# leggo le directory 
+__temp = os.listdir(BASE_PATH)
+subdirs = []
+for __o in __temp:
+    if os.path.isdir(os.path.join(BASE_PATH,__o)):
+        subdirs.append(__o)
+
+#rint(subdirs)
+
+
+## DEFINISCE LA TRASFORMAZIONE
+##============================
+transform = transforms.Compose(
+    [
+    transforms.ToTensor()
+   # transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+    ]
+    )
+
+
+ds = dspt.crea_dataset_immagini(BASE_PATH, 
+                                subdirs,  
+                                transform=transform)
+
+## DEFINISCO  IL BATCH SIZE
+## =======================================
+batch_size = len(ds)
+shuffle_dataset = True
+random_seed= 42
+
+# IL TEST VA FATTO SU TUTTO IL DATASET
+# val_indices contiene la lista degli indici
+dataset_size = len(ds)
+val_indices = list(range(dataset_size))
+
+## DEFINISCE I SAMPLERS
+## ======================
+valid_sampler = SubsetRandomSampler(val_indices)
+
+## DEFINISCE I LOADERS
+## ===================
+validation_loader = torch.utils.data.DataLoader(ds, 
+                                            batch_size=batch_size,
+                                            sampler=valid_sampler)
+
+
+
+###################################################################
+###################################################################
+## INIZIO CLASSIFICAZIONE
+###################################################################
+##       DA DEBUGGARE
+###################################################################
+
+matrice_confusione = np.zeros( (len(subdirs), len(subdirs)) ) 
+
+dataiter = iter(validation_loader)
+
+images, labels = dataiter.next()
+
+# Viewing data examples used for training
+
+with torch.no_grad():
+    model.eval()
+
+    for image, label in zip(images, labels):
+        image_tensor = image.unsqueeze_(0)
+        output_ = model(image_tensor)
+        output_ = output_.argmax()
+        # la classe reale sta sulle righe
+        r = label.item()
+        # la predizione sulle colonne
+        c = output_.item()  
+        matrice_confusione[r][c] += 1
+
+        # k = output_.item()==label.item()
+        # print(output_.item() , label.item() )
+
+print(matrice_confusione)
+#######################################################################
+#######################################################################
+
 
 
 ##############################################################

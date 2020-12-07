@@ -57,7 +57,19 @@ class Image_Dataset(Dataset):
 
 
 
-def crea_dataset_immagini(BASE_PATH, subdirs, etichette, transform = None):
+def crea_dataset_immagini(BASE_PATH, subdirs, transform = None):
+    """
+    Crea il dataset delle immagini dalla struttura delle directory
+    sotto BASE_PATH
+    La struttura che si aspetta e'
+    BASE_PATH------<subdirs[0]>--classe1 
+                |
+                |--<subdirs[1]>--classe2
+                |
+                |--<subdirs[2]>--classe3
+    eccetera
+    transform : trasformazione da fare sulle immagini (passata Iamge_Dataset)
+    """
     image=[]
     labels=[]
 
@@ -72,7 +84,7 @@ def crea_dataset_immagini(BASE_PATH, subdirs, etichette, transform = None):
                 for c in os.listdir(os.path.join(BASE_PATH, file)):
                     if c!='annotations':
                         image.append(c)
-                        labels.append(etichette[ind_eti])
+                        labels.append(subdirs[ind_eti])
 
     # A PARTIRE DALLE LISTE CREA UN DATASET 
     data = {'Images':image, 'labels':labels} 
