@@ -67,7 +67,7 @@ for __o in __temp:
 ##============================
 transform = transforms.Compose(
     [
-    transforms.ToTensor()
+    transforms.ToTensor() # trasforma in [0,1] i valori
    # transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ]
     )
