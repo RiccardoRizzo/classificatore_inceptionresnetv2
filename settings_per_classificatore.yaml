@@ -1,0 +1,9 @@
+
+# nome completo del modello
+nome_completo : "/home/fvella/Workshop/Inception_ResNet/pretrained-models.pytorch/examples/save/Backup_200/best.pth"
+
+# path delle cartelle con i dati da classificare
+BASE_PATH : "/home/ricrizzo/Focus/22==Esperimenti/Anno2020/Articolo Workshop ICPR/dataset/train/"
+
+# path della architettura della rete
+path_architettura : "/home/ricrizzo/Focus/22==Esperimenti/Anno2020/Articolo Workshop ICPR/ann_modelli_importati/inceptionresnetv2_nuova/"
