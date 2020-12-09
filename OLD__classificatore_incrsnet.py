@@ -22,7 +22,7 @@ import salva_txt_matrici as sm
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # importo il path del modulo (da risistemare)
-sys.path.append("/home/ricrizzo/Focus/22==Esperimenti/Anno2020/Articolo Workshop ICPR/ann_modelli_importati/inceptionresnetv2_nuova/")
+sys.path.append("/home/riccardo/git-sw/ann_modelli_importati/inceptionresnetv2_nuova/")
 import pretrainedmodels as ptm
 
 import dataset_pytorch as dspt
@@ -40,7 +40,7 @@ def img_display(img):
 
 
 # cosi' posso caricare la rete in un colpo
-nome_completo = "/home/fvella/Workshop/Inception_ResNet/pretrained-models.pytorch/examples/save/Backup_200/best.pth"
+nome_completo = "/home/riccardo/Desktop/Link to classificatore_inception_resnet/best.pth"
 
 model = torch.load(nome_completo, map_location=device)
 
@@ -53,7 +53,7 @@ print(model)
 
 ## CREO IL DATASET
 ## ===============
-BASE_PATH = "/home/ricrizzo/Focus/22==Esperimenti/Anno2020/Articolo Workshop ICPR/dataset/train/"
+BASE_PATH = "/home/riccardo/Focus/22==Esperimenti/Anno2020/Articolo Workshop ICPR/GAN/dataset/train_tutte_dim_eguali/"
 
 # leggo le directory 
 __temp = os.listdir(BASE_PATH)
@@ -115,9 +115,8 @@ with torch.no_grad():
     model.eval()
     # batch di valutazione
     for images, labels in validation_loader:
-        # trasferisce sulla GPU se disponibile
-        images, labels = images.to(device), labels.to(device)
-       	num_elementi_testati += len(images)
+
+        num_elementi_testati += len(images)
         for image, label in zip(images, labels):
             image_tensor = image.unsqueeze_(0)
             output_ = model(image_tensor)
