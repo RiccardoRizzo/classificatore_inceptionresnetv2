@@ -16,6 +16,8 @@ from torch.utils.data.sampler import SubsetRandomSampler
 from torch.utils.data import Dataset
 import torchvision.transforms as transforms
 
+import salva_txt_matrici as sm
+
 ### SETTA IL DEVICE
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -80,7 +82,7 @@ ds = dspt.crea_dataset_immagini(BASE_PATH,
 ## DEFINISCO  IL BATCH SIZE
 ## =======================================
 batch_size = 1000
-shuffle_dataset = True
+
 random_seed= 42
 
 # IL TEST VA FATTO SU TUTTO IL DATASET
@@ -127,10 +129,12 @@ with torch.no_grad():
 
         # stampa report parziale
         print("num. elementi testati : " + str(num_elementi_testati) + " su " +str(num_elementi_totali))
-        print(matrice_confusione)
+        print(sm.matrice_a_stringa(matrice_confusione, "", ",\t" ) )
 # stampa finale
 print("matrice di confusione finale")
 print(matrice_confusione)
+nome_file = "matrice_confusione.csv"
+np.savetxt(nome_file, matrice_confusione, delimiter=', ', fmt='%d')
 #######################################################################
 #######################################################################
 
